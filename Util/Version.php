@@ -42,10 +42,11 @@ class Version
     }
 
     /**
-     * Check version to support method
+     * Check version to support method.
      *
      * @param string $class
      * @param string $method
+     *
      * @return bool
      */
     public static function isSupportMethod($class = 'Eccube\Application', $method = 'getInstance')
