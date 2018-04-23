@@ -15,9 +15,12 @@ use Plugin\OrderPdf\Event\OrderPdf;
 use Plugin\OrderPdf\Event\OrderPdfLegacy;
 use Plugin\OrderPdf\Form\Type\OrderPdfType;
 use Plugin\OrderPdf\Service\OrderPdfService;
+use Plugin\OrderPdf\Service\OrderWkPdfService;
 use Plugin\OrderPdf\Util\Version;
 use Silex\Application as BaseApplication;
 use Silex\ServiceProviderInterface;
+use Plugin\OrderPdf\Form\Type\Admin\OrderPdfConfigType;
+
 
 // include log functions (for 3.0.0 - 3.0.11)
 require_once __DIR__.'/../log.php';
@@ -34,9 +37,16 @@ class OrderPdfServiceProvider implements ServiceProviderInterface
      */
     public function register(BaseApplication $app)
     {
+        // Config
+        $app->match('/'.$app['config']['admin_route'].'/plugin/OrderPdf/config', 'Plugin\OrderPdf\Controller\Admin\ConfigController::index')->bind('plugin_OrderPdf_config');
+
+
         // Repository
         $app['orderpdf.repository.order_pdf'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\OrderPdf\Entity\OrderPdf');
+        });
+        $app['orderpdf.repository.order_pdf_config'] = $app->share(function() use ($app) {
+            return $app['orm.em']->getRepository('Plugin\OrderPdf\Entity\OrderPdfConfig');
         });
 
         // Order pdf event
@@ -74,6 +84,7 @@ class OrderPdfServiceProvider implements ServiceProviderInterface
         // 型登録
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
             $types[] = new OrderPdfType($app);
+            $types[] = new OrderPdfConfigType($app);
 
             return $types;
         }));
@@ -84,6 +95,9 @@ class OrderPdfServiceProvider implements ServiceProviderInterface
         // 帳票作成
         $app['orderpdf.service.order_pdf'] = $app->share(function () use ($app) {
             return new OrderPdfService($app);
+        });
+        $app['orderpdf.service.order_pdf_wkhtml'] = $app->share(function() use ($app) {
+            return new OrderWkPdfService($app);
         });
 
         // ============================================================

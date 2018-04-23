@@ -32,6 +32,7 @@ class Version201611111300 extends AbstractMigration
      */
     protected $entities = array(
         'Plugin\OrderPdf\Entity\OrderPdf',
+        'Plugin\OrderPdf\Entity\OrderPdfConfig',
     );
 
     /**
@@ -82,17 +83,25 @@ class Version201611111300 extends AbstractMigration
      */
     protected function createOrderPdf(Schema $schema)
     {
-        if ($schema->hasTable(self::TABLE)) {
-            return true;
-        }
-
         $app = Application::getInstance();
         $em = $app['orm.em'];
-        $classes = array(
-            $em->getClassMetadata('Plugin\OrderPdf\Entity\OrderPdf'),
-        );
         $tool = new SchemaTool($em);
-        $tool->createSchema($classes);
+
+        $classes = array(
+            'plg_order_pdf' => $em->getClassMetadata('Plugin\OrderPdf\Entity\OrderPdf'),
+            'plg_order_pdf_config' => $em->getClassMetadata('Plugin\OrderPdf\Entity\OrderPdfConfig'),
+        );
+
+        foreach ($classes as $table => $class) {
+            if ($schema->hasTable($table)) {
+                continue;
+            }
+
+            $tool->createSchema(array($class));
+        }
+
+        $sql = "INSERT INTO plg_order_pdf_config(id) VALUES (1);";
+        $this->addSql($sql);
 
         return true;
     }

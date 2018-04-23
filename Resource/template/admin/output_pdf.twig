@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <style>
+        *{ font-family: 'Helvetica Neue','Helvetica',Helvetica,Arial,sans-serif;}
+    </style>
+</head>
+<body>
+    <div class="invoice-box" style="border: 1px solid #eee; margin: auto">
+        <table cellpadding="0" cellspacing="0" width="100%" style="padding: 20px">
+            <tr class="top">
+                <td colspan="3" align="center" style="padding: 30px 0">
+                    <h1 style="border: 3px solid #000">お買上げ明細書(納品書)</h1>
+                </td>
+            </tr>
+            <tr class="top">
+                <td colspan="3">
+                    <table width="100%">
+                        <tr>
+                            <td class="title" width="70%">
+                                {% for Shipping in Order.Shippings %}
+                                    〒 {{ Shipping.zip01 }} - {{ Shipping.zip02 }} <br>
+                                    {{ Shipping.addr01 }} {{ Shipping.addr02 }}<br>
+                                    {{ Shipping.tel01 }} - {{ Shipping.tel02 }} - {{ Shipping.tel03 }}<br><br>
+                                    {{ Shipping.name01 }} {{ Shipping.name02 }}
+                                {% endfor %}
+                            </td>
+                            <td width="30%">
+                                <img src="https://i.gyazo.com/249f2ffbb8a0ae7252925806766ebd08.png"style="height: 60px">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <table width="100%">
+                        <tr>
+                            <td width="70%" style="padding: 20px 0 40px 0">
+                                このたびはお買上げいただきありがとうございます。 <br>
+                                下記の内容にて納品させていただきます。<br>
+                                ご確認くださいますよう、お願いいたします。<br>
+                            </td>
+                            <td width="30%">
+                                Shop name: {{ BaseInfo.shop_name }} <br>
+                                〒 - {{ BaseInfo.zip01 }} {{ BaseInfo.zip02 }} <br>
+                                TEL: {{ BaseInfo.tel01 }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="heading" style="font-weight: bold; font-size: 20px">
+                <td width="150" style="border-bottom: 2px solid #000; padding: 10px 0;">
+                    総合計金額
+                </td>
+                <td align="right" width="150" style="border-bottom: 2px solid #000; padding: 10px 0;">
+                    {{ Order.payment_total|price }}
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="100%" style="padding-top: 30px">
+                    <h2 style="border: 2px solid #000; padding: 5px 5px 1px">お買上げ明細</h2>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="100%" style="padding-top: 30px">
+                    <span style="font-weight: bold">[ ご注文日 ] </span>
+                    <br>
+                    <small style="padding-left: 20px">{{ Order.order_date|date_format }}</small>
+                    <br>
+                    <span style="font-weight: bold">[ 注文番号 ] </span>
+                    <br>
+                    <small style="padding-left: 20px">{{ Order.id }}</small>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="100%"><br><br></td>
+            </tr>
+
+            <tr style="font-weight: bold; margin-top: 30px">
+                <td colspan="100%">
+                    <table width="100%" border="2" style="border-collapse: collapse;">
+                        <tr style="background: #eee;">
+                            <td>商品名 / 商品コード / [ 規格 ] </td>
+                            <td align="right">数量</td>
+                            <td align="right"></td>
+                            <td align="right">金額(税込)</td>
+                        </tr>
+                        {% for OrderDetail in Order.OrderDetails  %}
+                            <tr>
+                                <td>{{ OrderDetail.product_name}} / {{ OrderDetail.product_code }}
+                                    {% if OrderDetail.class_category_name1 is not empty %}
+                                        / [
+                                        {{ OrderDetail.class_name1 }}：
+                                        {{ OrderDetail.class_category_name1 }}
+                                        {% if OrderDetail.class_category_name2 is not empty %}
+                                            /
+                                            {{ OrderDetail.class_name2 }}：
+                                            {{ OrderDetail.class_category_name2 }}
+                                        {% endif %}
+                                        ]
+                                    {% endif %}
+                                </td>
+                                <td align="right">5</td>
+                                <td align="right"></td>
+                                <td align="right">{{ OrderDetail.total_price|price }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr style="background: #eee;">
+                            <td></td>
+                            <td align="right"></td>
+                            <td align="right">商品合計</td>
+                            <td align="right">{{ Order.total|price }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td align="right"></td>
+                            <td align="right">商品合計</td>
+                            <td align="right">{{ Order.payment_total|price }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <p>＜ 備考 ＞</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+Plugin\OrderPdf\Entity\OrderPdfConfig:
+    type: entity
+    table: plg_order_pdf_config
+    repositoryClass: Plugin\OrderPdf\Repository\OrderPdfConfigRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            id: true
+            column: id
+            generator:
+                strategy: AUTO
+    fields:
+        wkhtml_exec_path:
+            type: string
+            nullable: true
+        timeout:
+            type: integer
+            unsigned: true
+            nullable: true

@@ -113,7 +113,9 @@ class OrderPdfController extends AbstractController
 
         // サービスの取得
         /* @var OrderPdfService $service */
-        $service = $app['orderpdf.service.order_pdf'];
+        $service = $app['orderpdf.service.order_pdf_wkhtml']->isEnable()
+            ? $app['orderpdf.service.order_pdf_wkhtml']
+            : $app['orderpdf.service.order_pdf'];
 
         $arrData = $form->getData();
 
