@@ -11,88 +11,127 @@
 namespace Plugin\OrderPdf\Entity;
 
 use Eccube\Entity\AbstractEntity;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class OrderPdf.
+ * OrderPdf
+ *
+ * @ORM\Table(name="plg_order_pdf")
+ * @ORM\Entity(repositoryClass="Plugin\OrderPdf\Repository\OrderPdfRepository")
  */
 class OrderPdf extends AbstractEntity
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="ids", type="string")
      */
     private $ids;
 
     /**
      * @var int
+     *
+     * @ORM\Column(name="id", type="integer", options={"unsigned":true})
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="issue_date", type="datetimetz")
      */
     private $issue_date;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="title", type="string")
      */
     private $title;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="message1", type="string")
      */
     private $message1;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="message2", type="string")
      */
     private $message2;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="message3", type="string")
      */
     private $message3;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="note1", type="string")
      */
     private $note1;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="note2", type="string")
      */
     private $note2;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="note3", type="string")
      */
     private $note3;
 
     /**
-     * @var bool
+     * @var integer
+     *
+     * @ORM\Column(name="default", type="boolean", options={"default": 0})
      */
     private $default;
 
     /**
-     * @var int
-     */
-    private $del_flg;
-
-    /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="update_date", type="datetimetz")
      */
     private $update_date;
 
     /**
-     * Set order id.
+     * @var integer
      *
-     * @param string $ids
-     *
-     * @return OrderPdf
+     * @ORM\Column(name="del_flg", type="boolean", options={"default": 0})
+     */
+    private $del_flg;
+
+    /**
+     * @return string
+     */
+    public function getIds()
+    {
+        return $this->ids;
+    }
+
+    /**
+     * @param $ids
+     * @return $this
      */
     public function setIds($ids)
     {
@@ -102,21 +141,16 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get order.
-     *
-     * @return string
+     * @return int
      */
-    public function getIds()
+    public function getId()
     {
-        return $this->ids;
+        return $this->id;
     }
 
     /**
-     * Set member id.
-     *
-     * @param string $id
-     *
-     * @return OrderPdf
+     * @param $id
+     * @return $this
      */
     public function setId($id)
     {
@@ -126,32 +160,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set download date.
-     *
-     * @param \DateTime $issueDate
-     *
-     * @return OrderPdf
-     */
-    public function setIssueDate($issueDate)
-    {
-        $this->issue_date = $issueDate;
-
-        return $this;
-    }
-
-    /**
-     * Get download date.
-     *
      * @return \DateTime
      */
     public function getIssueDate()
@@ -160,8 +168,17 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get title.
-     *
+     * @param $issue_date
+     * @return $this
+     */
+    public function setIssueDate($issue_date)
+    {
+        $this->issue_date = $issue_date;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -170,11 +187,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return OrderPdf
+     * @param $title
+     * @return $this
      */
     public function setTitle($title)
     {
@@ -184,8 +198,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get message1.
-     *
      * @return string
      */
     public function getMessage1()
@@ -194,11 +206,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set message1.
-     *
-     * @param string $message1
-     *
-     * @return OrderPdf
+     * @param $message1
+     * @return $this
      */
     public function setMessage1($message1)
     {
@@ -208,8 +217,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get message2.
-     *
      * @return string
      */
     public function getMessage2()
@@ -218,11 +225,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set message2.
-     *
-     * @param string $message2
-     *
-     * @return OrderPdf
+     * @param $message2
+     * @return $this
      */
     public function setMessage2($message2)
     {
@@ -232,8 +236,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get message3.
-     *
      * @return string
      */
     public function getMessage3()
@@ -242,11 +244,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set message3.
-     *
-     * @param string $message3
-     *
-     * @return OrderPdf
+     * @param $message3
+     * @return $this
      */
     public function setMessage3($message3)
     {
@@ -256,8 +255,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get note1.
-     *
      * @return string
      */
     public function getNote1()
@@ -266,11 +263,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set note1.
-     *
-     * @param string $note1
-     *
-     * @return OrderPdf
+     * @param $note1
+     * @return $this
      */
     public function setNote1($note1)
     {
@@ -280,8 +274,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get note2.
-     *
      * @return string
      */
     public function getNote2()
@@ -290,11 +282,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set note2.
-     *
-     * @param string $note2
-     *
-     * @return OrderPdf
+     * @param $note2
+     * @return $this
      */
     public function setNote2($note2)
     {
@@ -304,8 +293,6 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Get note3.
-     *
      * @return string
      */
     public function getNote3()
@@ -314,11 +301,8 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set note3.
-     *
-     * @param string $note3
-     *
-     * @return OrderPdf
+     * @param $note3
+     * @return $this
      */
     public function setNote3($note3)
     {
@@ -328,23 +312,7 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set default to save.
-     *
-     * @param bool $isDefault
-     *
-     * @return OrderPdf
-     */
-    public function setDefault($isDefault)
-    {
-        $this->default = $isDefault;
-
-        return $this;
-    }
-
-    /**
-     * Get default.
-     *
-     * @return bool
+     * @return int
      */
     public function getDefault()
     {
@@ -352,46 +320,17 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set del_flg.
-     *
-     * @param int $delFlg
-     *
-     * @return OrderPdf
+     * @param $default
+     * @return $this
      */
-    public function setDelFlg($delFlg)
+    public function setDefault($default)
     {
-        $this->del_flg = $delFlg;
+        $this->default = $default;
 
         return $this;
     }
 
     /**
-     * Get del_flg.
-     *
-     * @return int
-     */
-    public function getDelFlg()
-    {
-        return $this->del_flg;
-    }
-
-    /**
-     * Set create_date.
-     *
-     * @param \DateTime $createDate
-     *
-     * @return OrderPdf
-     */
-    public function setCreateDate($createDate)
-    {
-        $this->create_date = $createDate;
-
-        return $this;
-    }
-
-    /**
-     * Get create_date.
-     *
      * @return \DateTime
      */
     public function getCreateDate()
@@ -400,26 +339,52 @@ class OrderPdf extends AbstractEntity
     }
 
     /**
-     * Set update_date.
-     *
-     * @param \DateTime $updateDate
-     *
-     * @return OrderPdf
+     * @param $create_date
+     * @return $this
      */
-    public function setUpdateDate($updateDate)
+    public function setCreateDate($create_date)
     {
-        $this->update_date = $updateDate;
+        $this->create_date = $create_date;
 
         return $this;
     }
 
     /**
-     * Get update_date.
-     *
      * @return \DateTime
      */
     public function getUpdateDate()
     {
         return $this->update_date;
     }
+
+    /**
+     * @param $update_date
+     * @return $this
+     */
+    public function setUpdateDate($update_date)
+    {
+        $this->update_date = $update_date;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDelFlg()
+    {
+        return $this->del_flg;
+    }
+
+    /**
+     * @param $del_flg
+     * @return $this
+     */
+    public function setDelFlg($del_flg)
+    {
+        $this->del_flg = $del_flg;
+
+        return $this;
+    }
 }
+
