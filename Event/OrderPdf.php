@@ -29,9 +29,9 @@ class OrderPdf extends CommonEvent
         /**
          * @var \Twig_Environment $twig
          */
-        $twig = $this->app['twig'];
+//        $twig = $this->twigEnvironment;
 
-        $twigAppend = $twig->getLoader()->getSource('OrderPdf/Resource/template/admin/order_pdf_menu.twig');
+        $twigAppend = $this->twigEnvironment->render('OrderPdf/Resource/template/admin/order_pdf_menu.twig');
         /**
          * @var string twig template
          */

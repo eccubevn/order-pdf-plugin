@@ -16,6 +16,7 @@ use Plugin\OrderPdf\Entity\OrderPdf;
 use Plugin\OrderPdf\Form\Type\OrderPdfType;
 use Plugin\OrderPdf\Repository\OrderPdfRepository;
 use Plugin\OrderPdf\Service\OrderPdfService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +50,8 @@ class OrderPdfController extends AbstractController
     /**
      * 納品書の設定画面表示.
      *
+     * @Route("%eccube_admin_route%/plugin/order-pdf", name="plugin_admin_order_pdf");
+     *
      * @param Request     $request
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -58,7 +61,7 @@ class OrderPdfController extends AbstractController
     public function index(Request $request)
     {
         // requestから受注番号IDの一覧を取得する.
-        $ids = $this->getIds($request);
+        $ids = $request->get('ids', []);
 
         if (count($ids) == 0) {
             $this->addError('admin.plugin.order_pdf.parameter.notfound', 'admin');
@@ -67,7 +70,7 @@ class OrderPdfController extends AbstractController
             return $this->redirect($this->generateUrl('admin_order'));
         }
 
-        $OrderPdf = $this->orderPdfRepository->find($this->user());
+        $OrderPdf = $this->orderPdfRepository->find($this->getUser());
 
         if (EntityUtil::isEmpty($OrderPdf)) {
             $OrderPdf = new OrderPdf();
@@ -97,6 +100,8 @@ class OrderPdfController extends AbstractController
     /**
      * 作成ボタンクリック時の処理
      * 帳票のPDFをダウンロードする.
+     *
+     * @Route("%eccube_admin_route%/plugin/order-pdf/download", name="plugin_admin_order_pdf_download");
      *
      * @param Request     $request
      *
@@ -148,12 +153,12 @@ class OrderPdfController extends AbstractController
 
         // レスポンスヘッダーにContent-Dispositionをセットし、ファイル名をreceipt.pdfに指定
         $response->headers->set('Content-Disposition', 'attachment; filename="'.$this->orderPdfService->getPdfFileName().'"');
-        log_info('OrderPdf download success!', array('Order ID' => implode(',', $this->getIds($request))));
+        log_info('OrderPdf download success!', array('Order ID' => implode(',', $request->get('ids', []))));
 
         $isDefault = isset($arrData['default']) ? $arrData['default'] : false;
         if ($isDefault) {
             // Save input to DB
-            $arrData['admin'] = $this->user();
+            $arrData['admin'] = $this->getUser();
 
             $this->orderPdfRepository->save($arrData);
         }
@@ -170,30 +175,12 @@ class OrderPdfController extends AbstractController
      */
     protected function getIds(Request $request)
     {
-        $isList = array();
-
+        $isList = [];
         // その他メニューのバージョン
-        $queryString = $request->getQueryString();
-
-        if (empty($queryString)) {
-            return $isList;
+        $query = $request->get('ids', []);
+        if ($query) {
+            sort($isList);
         }
-
-        // クエリーをparseする
-        // idsX以外はない想定
-        parse_str($queryString, $ary);
-
-        foreach ($ary as $key => $val) {
-            // キーが一致
-            if (preg_match('/^ids\d+$/', $key)) {
-                if (!empty($val) && $val == 'on') {
-                    $isList[] = intval(str_replace('ids', '', $key));
-                }
-            }
-        }
-
-        // id順にソートする
-        sort($isList);
 
         return $isList;
     }

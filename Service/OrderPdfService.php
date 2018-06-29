@@ -11,10 +11,14 @@
 namespace Plugin\OrderPdf\Service;
 
 use Eccube\Application;
+use Eccube\Common\EccubeConfig;
 use Eccube\Entity\BaseInfo;
-use Eccube\Entity\Help;
 use Eccube\Entity\Order;
-use Eccube\Entity\OrderDetail;
+use Eccube\Entity\OrderItem;
+use Eccube\Repository\BaseInfoRepository;
+use Eccube\Repository\OrderRepository;
+use Eccube\Service\TaxRuleService;
+use Plugin\OrderPdf\Repository\OrderPdfRepository;
 
 /**
  * Class OrderPdfService.
@@ -22,6 +26,19 @@ use Eccube\Entity\OrderDetail;
  */
 class OrderPdfService extends AbstractFPDIService
 {
+    /** @var  OrderRepository */
+    protected $orderRepository;
+
+    /** @var  OrderPdfRepository */
+    protected $orderPdfRepository;
+
+    /** @var  TaxRuleService */
+    protected $taxRuleService;
+    /**
+     * @var Application
+     */
+    private $eccubeConfig;
+
     // ====================================
     // 定数宣言
     // ====================================
@@ -42,11 +59,9 @@ class OrderPdfService extends AbstractFPDIService
     // ====================================
     // 変数宣言
     // ====================================
-    /** @var Application */
-    public $app;
 
     /** @var BaseInfo */
-    public $BaseInfo;
+    public $baseInfoRepository;
 
     /** 購入詳細情報 ラベル配列
      * @var array
@@ -81,15 +96,13 @@ class OrderPdfService extends AbstractFPDIService
     /** 発行日 @var string */
     private $issueDate = '';
 
-    /**
-     * コンストラクタ.
-     *
-     * @param object $app
-     */
-    public function __construct($app)
+
+    public function __construct(EccubeConfig $eccubeConfig, OrderRepository $orderRepository, TaxRuleService $taxRuleService, BaseInfoRepository $baseInfoRepository)
     {
-        $this->app = $app;
-        $this->BaseInfo = $app['eccube.repository.base_info']->get();
+        $this->eccubeConfig = $eccubeConfig;
+        $this->baseInfoRepository = $baseInfoRepository->get();
+        $this->orderRepository = $orderRepository;
+        $this->taxRuleService = $taxRuleService;
         parent::__construct();
 
         // 購入詳細情報の設定を行う
@@ -151,9 +164,9 @@ class OrderPdfService extends AbstractFPDIService
         $this->setDefaultData($formData);
 
         // テンプレートファイルを読み込む(app配下のテンプレートファイルを優先して読み込む)
-        $pdfFile = $this->app['config']['OrderPdf']['const']['pdf_file'];
+        $pdfFile = $this->eccubeConfig['OrderPdf']['const']['pdf_file'];
         $originalPath = __DIR__.'/../Resource/template/'.$pdfFile;
-        $userPath = $this->app['config']['template_realdir'].'/../admin/OrderPdf/'.$pdfFile;
+        $userPath = $this->eccubeConfig['plugin_realdir'].'/../admin/OrderPdf/'.$pdfFile;
         $templateFilePath = file_exists($userPath) ? $userPath : $originalPath;
         $this->setSourceFile($templateFilePath);
 
@@ -161,7 +174,7 @@ class OrderPdfService extends AbstractFPDIService
             $this->lastOrderId = $id;
 
             // 注文番号から受注情報を取得する
-            $order = $this->app[self::REPOSITORY_ORDER_PDF]->find($id);
+            $order = $this->orderRepository->find($id);
             if (!$order) {
                 // 注文情報の取得ができなかった場合
                 continue;
@@ -255,42 +268,42 @@ class OrderPdfService extends AbstractFPDIService
 
         // 特定商取引法を取得する
         /* @var Help $Help */
-        $Help = $this->app['eccube.repository.help']->get();
+//        $Help = $this->app['eccube.repository.help']->get();
 
         // ショップ名
-        $this->lfText(125, 60, $this->BaseInfo->getShopName(), 8, 'B');
+        $this->lfText(125, 60, $this->baseInfoRepository->getShopName(), 8, 'B');
         // URL
-        $this->lfText(125, 63, $Help->getLawUrl(), 8);
+        $this->lfText(125, 63, 'getLawUrl', 8);
         // 会社名
-        $this->lfText(125, 68, $Help->getLawCompany(), 8);
+        $this->lfText(125, 68, 'getLawCompany', 8);
         // 郵便番号
-        $text = '〒 '.$Help->getLawZip01().' - '.$Help->getLawZip02();
+        $text = '〒 '.'getLawZip01'.' - '.'getLawZip02';
         $this->lfText(125, 71, $text, 8);
         // 都道府県+所在地
-        $lawPref = $Help->getLawPref() ? $Help->getLawPref()->getName() : null;
-        $text = $lawPref.$Help->getLawAddr01();
+        $lawPref = 'getLawZip02' ? '$Help->getLawPref->getName' : null;
+        $text = $lawPref.'getLawAddr01';
         $this->lfText(125, 74, $text, 8);
-        $this->lfText(125, 77, $Help->getLawAddr02(), 8);
+        $this->lfText(125, 77, 'getLawAddr02', 8);
 
         // 電話番号
-        $text = 'TEL: '.$Help->getLawTel01().'-'.$Help->getLawTel02().'-'.$Help->getLawTel03();
+        $text = 'TEL: '.'getLawTel01'.'-'.'getLawTel02'.'-'.'getLawTel03';
 
         //FAX番号が存在する場合、表示する
-        if (strlen($Help->getLawFax01()) > 0) {
-            $text .= '　FAX: '.$Help->getLawFax01().'-'.$Help->getLawFax02().'-'.$Help->getLawFax03();
+        if (strlen('getLawFax01') > 0) {
+            $text .= '　FAX: '.'getLawFax01'.'-'.'getLawFax02'.'-'.'getLawFax03';
         }
         $this->lfText(125, 80, $text, 8);  //TEL・FAX
 
         // メールアドレス
-        if (strlen($Help->getLawEmail()) > 0) {
-            $text = 'Email: '.$Help->getLawEmail();
+        if (strlen('getLawEmail') > 0) {
+            $text = 'Email: '.'getLawEmail';
             $this->lfText(125, 83, $text, 8);      // Email
         }
 
         // ロゴ画像(app配下のロゴ画像を優先して読み込む)
-        $logoFile = $this->app['config']['OrderPdf']['const']['logo_file'];
+        $logoFile = $this->eccubeConfig['OrderPdf']['const']['logo_file'];
         $originalPath = __DIR__.'/../Resource/template/'.$logoFile;
-        $userPath = $this->app['config']['template_realdir'].'/../admin/OrderPdf/'.$logoFile;
+        $userPath = $this->eccubeConfig['plugin_realdir'].'/../admin/OrderPdf/'.$logoFile;
         $logoFilePath = file_exists($userPath) ? $userPath : $originalPath;
         $this->Image($logoFilePath, 124, 46, 40);
     }
@@ -428,9 +441,10 @@ class OrderPdfService extends AbstractFPDIService
         // =========================================
         $i = 0;
         /* @var OrderDetail $OrderDetail */
-        foreach ($Order->getOrderDetails() as $OrderDetail) {
+        foreach ($Order->getOrderItems() as $OrderDetail) {
             // class categoryの生成
             $classCategory = '';
+            /** @var OrderItem $OrderDetail */
             if ($OrderDetail->getClassCategoryName1()) {
                 $classCategory .= ' [ '.$OrderDetail->getClassCategoryName1();
                 if ($OrderDetail->getClassCategoryName2() == '') {
@@ -440,7 +454,7 @@ class OrderPdfService extends AbstractFPDIService
                 }
             }
             // 税
-            $tax = $this->app['eccube.service.tax_rule']->calcTax($OrderDetail->getPrice(), $OrderDetail->getTaxRate(), $OrderDetail->getTaxRule());
+            $tax = $this->taxRuleService->calcTax($OrderDetail->getPrice(), $OrderDetail->getTaxRate(), \Eccube\Entity\Master\RoundingType::ROUND);
             $OrderDetail->setPriceIncTax($OrderDetail->getPrice() + $tax);
 
             // product
@@ -631,10 +645,10 @@ class OrderPdfService extends AbstractFPDIService
     protected function setDefaultData(array &$formData)
     {
         $defaultList = array(
-            'title' => $this->app->trans('admin.plugin.order_pdf.title.default'),
-            'message1' => $this->app->trans('admin.plugin.order_pdf.message1.default'),
-            'message2' => $this->app->trans('admin.plugin.order_pdf.message2.default'),
-            'message3' => $this->app->trans('admin.plugin.order_pdf.message3.default'),
+            'title' => trans('admin.plugin.order_pdf.title.default'),
+            'message1' => trans('admin.plugin.order_pdf.message1.default'),
+            'message2' => trans('admin.plugin.order_pdf.message2.default'),
+            'message3' => trans('admin.plugin.order_pdf.message3.default'),
         );
 
         foreach ($defaultList as $key => $value) {

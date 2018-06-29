@@ -11,8 +11,14 @@
 namespace Plugin\OrderPdf\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Eccube\Application;
+use Eccube\Common\EccubeConfig;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -24,20 +30,23 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class OrderPdfType extends AbstractType
 {
-    /**
-     * @var Application
-     */
-    private $app;
+    /** @var  EccubeConfig */
+    private $eccubeConfig;
+
+    /** @var  EntityManagerInterface */
+    private $entityManager;
 
     /**
      * OrderPdfType constructor.
-     *
-     * @param object $app
+     * @param EccubeConfig $eccubeConfig
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct($app)
+    public function __construct(EccubeConfig $eccubeConfig, EntityManagerInterface $entityManager)
     {
-        $this->app = $app;
+        $this->eccubeConfig = $eccubeConfig;
+        $this->entityManager = $entityManager;
     }
+
 
     /**
      * Build config type form.
@@ -47,10 +56,9 @@ class OrderPdfType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $config = $this->app['config'];
-        $app = $this->app;
+        $config = $this->eccubeConfig;
         $builder
-            ->add('ids', 'text', array(
+            ->add('ids', TextType::class, array(
                 'label' => '注文番号',
                 'required' => false,
                 'attr' => array('readonly' => 'readonly'),
@@ -58,7 +66,7 @@ class OrderPdfType extends AbstractType
                     new Assert\NotBlank(),
                 ),
             ))
-            ->add('issue_date', 'date', array(
+            ->add('issue_date', DateType::class, array(
                 'label' => '発行日',
                 'input' => 'datetime',
                 'widget' => 'single_text',
@@ -70,16 +78,16 @@ class OrderPdfType extends AbstractType
                     new Assert\DateTime(),
                 ),
             ))
-            ->add('title', 'text', array(
+            ->add('title', TextType::class, array(
                 'label' => '帳票タイトル',
                 'required' => false,
-                'attr' => array('maxlength' => $config['stext_len']),
+                'attr' => array('maxlength' => $config['eccube_stext_len']),
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['stext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
             // メッセージ
-            ->add('message1', 'text', array(
+            ->add('message1', TextType::class, array(
                 'label' => '1行目',
                 'required' => false,
                 'attr' => array('maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']),
@@ -88,7 +96,7 @@ class OrderPdfType extends AbstractType
                 ),
                 'trim' => false,
             ))
-            ->add('message2', 'text', array(
+            ->add('message2', TextType::class, array(
                 'label' => '2行目',
                 'required' => false,
                 'attr' => array('maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']),
@@ -97,7 +105,7 @@ class OrderPdfType extends AbstractType
                 ),
                 'trim' => false,
             ))
-            ->add('message3', 'text', array(
+            ->add('message3', TextType::class, array(
                 'label' => '3行目',
                 'required' => false,
                 'attr' => array('maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']),
@@ -107,44 +115,43 @@ class OrderPdfType extends AbstractType
                 'trim' => false,
             ))
             // 備考
-            ->add('note1', 'text', array(
+            ->add('note1', TextType::class, array(
                 'label' => '1行目',
                 'required' => false,
-                'attr' => array('maxlength' => $config['stext_len']),
+                'attr' => array('maxlength' => $config['eccube_stext_len']),
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['stext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
-            ->add('note2', 'text', array(
+            ->add('note2', TextType::class, array(
                 'label' => '2行目',
                 'required' => false,
-                'attr' => array('maxlength' => $config['stext_len']),
+                'attr' => array('maxlength' => $config['eccube_stext_len']),
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['stext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
-            ->add('note3', 'text', array(
+            ->add('note3', TextType::class, array(
                 'label' => '3行目',
                 'required' => false,
-                'attr' => array('maxlength' => $config['stext_len']),
+                'attr' => array('maxlength' => $config['eccube_stext_len']),
                 'constraints' => array(
-                    new Assert\Length(array('max' => $config['stext_len'])),
+                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
                 ),
             ))
-            ->add('default', 'checkbox', array(
+            ->add('default', CheckboxType::class, array(
                 'required' => false,
                 'label' => '入力内容を保存する',
             ))
-            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($app) {
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 $form = $event->getForm();
                 $data = $form->getData();
                 if (!isset($data['ids']) || !is_string($data['ids'])) {
                     return;
                 }
                 $ids = explode(',', $data['ids']);
-                /* @var $em EntityManager */
-                $em = $app['orm.em'];
-                $qb = $em->createQueryBuilder();
+
+                $qb = $this->entityManager->createQueryBuilder();
                 $qb->select('count(o.id)')
                     ->from('Eccube\\Entity\\Order', 'o')
                     ->where($qb->expr()->in('o.id', ':ids'))
@@ -153,7 +160,7 @@ class OrderPdfType extends AbstractType
                 $expected = count($ids);
                 if ($actual != $expected) {
                     $form['ids']->addError(
-                        new FormError($app->trans('admin.plugin.order_pdf.parameter.notfound'))
+                        new FormError(trans('admin.plugin.order_pdf.parameter.notfound'))
                     );
                 }
             });

@@ -10,31 +10,35 @@
 
 namespace Plugin\OrderPdf;
 
-use Eccube\Application;
+use Eccube\Event\EventArgs;
 use Eccube\Event\TemplateEvent;
 use Plugin\OrderPdf\Event\OrderPdf;
 use Plugin\OrderPdf\Event\OrderPdfLegacy;
 use Plugin\OrderPdf\Util\Version;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
- * Class OrderPdf Event.
+ * Class OrderPdfEvent.
  */
-class OrderPdfEvent
+class OrderPdfEvent implements EventSubscriberInterface
 {
-    /**
-     * @var Application
-     */
-    private $app;
+    /** @var  OrderPdf */
+    protected $orderPdfEvent;
 
     /**
      * OrderPdfEvent constructor.
-     *
-     * @param \Silex\Application $app
+     * @param OrderPdf $orderPdf
      */
-    public function __construct($app)
+    public function __construct(OrderPdf $orderPdf)
     {
-        $this->app = $app;
+        $this->orderPdfEvent = $orderPdf;
+    }
+
+    public function onAdminOrderIndexInitialize(EventArgs $event)
+    {
+        /* @var OrderPdf $orderPdfEvent */
+//        $this->orderPdfEvent->onAdminOrderIndexInitialize($event);
     }
 
     /**
@@ -45,8 +49,7 @@ class OrderPdfEvent
     public function onAdminOrderIndexRender(TemplateEvent $event)
     {
         /* @var OrderPdf $orderPdfEvent */
-        $orderPdfEvent = $this->app['orderpdf.event.order_pdf'];
-        $orderPdfEvent->onAdminOrderIndexRender($event);
+        $this->orderPdfEvent->onAdminOrderIndexRender($event);
     }
 
     /**
@@ -75,5 +78,18 @@ class OrderPdfEvent
     private function supportNewHookPoint()
     {
         return Version::isSupportVersion();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            'admin.order.index.initialize' => [['onAdminOrderIndexInitialize', 10]],
+            'Admin/@admin/Order/index.twig' => [['onAdminOrderIndexRender', 10]],
+        ];
     }
 }

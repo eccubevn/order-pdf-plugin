@@ -10,7 +10,9 @@
 
 namespace Plugin\OrderPdf\Event;
 
-use Eccube\Application;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
+
 
 /**
  * Class Common Event.
@@ -18,18 +20,40 @@ use Eccube\Application;
 class CommonEvent
 {
     /**
-     * @var Application
+     * @var string target render on the front-end
      */
-    protected $app;
+    protected $makerTag = '<!--# maker-plugin-tag #-->';
 
     /**
-     * AbstractEvent constructor.
-     *
-     * @param \Silex\Application $app
+     * @var TranslatorInterface
      */
-    public function __construct($app)
-    {
-        $this->app = $app;
+    protected $translator;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twigEnvironment;
+
+    /**
+     * CommonEvent constructor.
+     *
+     * @param \Twig_Environment $twigEnvironment
+     * @param TranslatorInterface $translator
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     */
+    public function __construct(
+        \Twig_Environment $twigEnvironment,
+        TranslatorInterface $translator,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->twigEnvironment = $twigEnvironment;
+        $this->translator = $translator;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -48,22 +72,22 @@ class CommonEvent
          * Group 1
          * Points to start the search.
          */
-        $search = '/(<li\s+id="dropmenu"[\s\S]*)';
+        $search = '/(<input\s+type="hidden[\s\S]*)';
         /*
          * Group 2
-         * Start drop down section.
+         * Start div section.
          */
-        $search .= '(<ul\s+class="dropdown\-menu"[\s\S]*)';
+        $search .= '(<div\s+class="col\-auto d\-none btn\-bulk\-wrapper[\s\S]*)';
         /*
          * Group 3
-         * The end of the dropdown section.
+         * The end of the button section.
          */
-        $search .= '(<\/li>[\n\s]*<\/ul>)';
+        $search .= '(<button\s+type="button"\s+class="btn btn\-ec\-delete[\s\S]*)';
         /*
          * Group 4
          * Points to end the search.
          */
-        $search .= '([\s\S]*<form\s+id="dropdown\-form")/';
+        $search .= '(<div\s+class="card rounded border\-0 mb\-4")/';
 
         $arrMatch = array();
         preg_match($search, $html, $arrMatch, PREG_OFFSET_CAPTURE);
@@ -71,6 +95,7 @@ class CommonEvent
         if (!isset($arrMatch[4])) {
             return $html;
         }
+
         $oldHtml = $arrMatch[2][0];
 
         // first html
@@ -82,7 +107,10 @@ class CommonEvent
         $endHalfHtml = substr($html, $oldHtmlEndPos);
 
         // new html
-        $newHtml = str_replace('</ul>', $part.'</ul>', $oldHtml);
+        $newHtml = str_replace(
+            "<button class=\"btn btn-ec-regular mr-2\">{{ 'admin.order.index.btn_bulk_export'|trans }}</button>",
+            "<button class=\"btn btn-ec-regular mr-2\">{{ 'admin.order.index.btn_bulk_export'|trans }}</button>".$part,
+            $oldHtml);
 
         $html = $firstHalfHtml.$newHtml.$endHalfHtml;
 

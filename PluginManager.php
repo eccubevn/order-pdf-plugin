@@ -50,7 +50,7 @@ class PluginManager extends AbstractPluginManager
         $this->removeLogo($app['config'], $config['code'], $config['const']['logo_file']);
         $this->removeLogo($app['config'], $config['code'], $config['const']['pdf_file']);
 
-        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code'], 0);
+//        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code'], 0);
     }
 
     /**
@@ -61,7 +61,7 @@ class PluginManager extends AbstractPluginManager
      */
     public function enable($config, $app)
     {
-        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code']);
+//        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code']);
     }
 
     /**
@@ -86,7 +86,7 @@ class PluginManager extends AbstractPluginManager
         $this->copyFile($app['config'], $config['code'], $config['const']['pdf_file']);
 
         // Update
-        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code']);
+//        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code']);
     }
 
     /**
@@ -98,6 +98,7 @@ class PluginManager extends AbstractPluginManager
      */
     private function copyFile($config, $pluginCode, $fileName)
     {
+        return;
         $src = $this->getPluginTemplateDir().'/'.$fileName;
         $target = $this->getAppTemplateDir($config).'/'.$pluginCode.'/'.$fileName;
 
