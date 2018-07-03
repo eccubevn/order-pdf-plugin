@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the Order Pdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,12 +29,8 @@ class OrderPdf extends CommonEvent
     {
         log_info('Event: Order pdf hook into the order search render start.');
 
-        /**
-         * @var \Twig_Environment $twig
-         */
-//        $twig = $this->twigEnvironment;
-
         $twigAppend = $this->twigEnvironment->render('OrderPdf/Resource/template/admin/order_pdf_menu.twig');
+
         /**
          * @var string twig template
          */

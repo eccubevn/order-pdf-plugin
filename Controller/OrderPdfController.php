@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the Order Pdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -29,14 +32,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class OrderPdfController extends AbstractController
 {
-    /** @var  OrderPdfRepository */
+    /** @var OrderPdfRepository */
     protected $orderPdfRepository;
 
-    /** @var  OrderPdfService */
+    /** @var OrderPdfService */
     protected $orderPdfService;
 
     /**
      * OrderPdfController constructor.
+     *
      * @param OrderPdfRepository $orderPdfRepository
      * @param OrderPdfService $orderPdfService
      */
@@ -45,7 +49,6 @@ class OrderPdfController extends AbstractController
         $this->orderPdfRepository = $orderPdfRepository;
         $this->orderPdfService = $orderPdfService;
     }
-
 
     /**
      * 納品書の設定画面表示.
@@ -82,7 +85,7 @@ class OrderPdfController extends AbstractController
         }
 
         /**
-         * @var FormBuilder $builder
+         * @var FormBuilder
          */
         $builder = $this->formFactory->createBuilder(OrderPdfType::class, $OrderPdf);
 
@@ -92,9 +95,9 @@ class OrderPdfController extends AbstractController
         // Formへの設定
         $form->get('ids')->setData(implode(',', $ids));
 
-        return $this->render('OrderPdf/Resource/template/admin/order_pdf.twig', array(
+        return $this->render('OrderPdf/Resource/template/admin/order_pdf.twig', [
             'form' => $form->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -112,7 +115,7 @@ class OrderPdfController extends AbstractController
     public function download(Request $request)
     {
         /**
-         * @var FormBuilder $builder
+         * @var FormBuilder
          */
         $builder = $this->formFactory->createBuilder(OrderPdfType::class);
 
@@ -124,9 +127,9 @@ class OrderPdfController extends AbstractController
         if (!$form->isValid()) {
             log_info('The parameter is invalid!');
 
-            return $this->render('OrderPdf/Resource/template/admin/order_pdf.twig', array(
+            return $this->render('OrderPdf/Resource/template/admin/order_pdf.twig', [
                 'form' => $form->createView(),
-            ));
+            ]);
         }
 
         $arrData = $form->getData();
@@ -139,27 +142,26 @@ class OrderPdfController extends AbstractController
             $this->addError('admin.plugin.order_pdf.download.failure', 'admin');
             log_info('Unable to create pdf files! Process have problems!');
 
-            return $this->render('OrderPdf/Resource/template/admin/order_pdf.twig', array(
+            return $this->render('OrderPdf/Resource/template/admin/order_pdf.twig', [
                 'form' => $form->createView(),
-            ));
+            ]);
         }
 
         // ダウンロードする
         $response = new Response(
             $this->orderPdfService->outputPdf(),
             200,
-            array('content-type' => 'application/pdf')
+            ['content-type' => 'application/pdf']
         );
 
         // レスポンスヘッダーにContent-Dispositionをセットし、ファイル名をreceipt.pdfに指定
         $response->headers->set('Content-Disposition', 'attachment; filename="'.$this->orderPdfService->getPdfFileName().'"');
-        log_info('OrderPdf download success!', array('Order ID' => implode(',', $request->get('ids', []))));
+        log_info('OrderPdf download success!', ['Order ID' => implode(',', $request->get('ids', []))]);
 
         $isDefault = isset($arrData['default']) ? $arrData['default'] : false;
         if ($isDefault) {
             // Save input to DB
             $arrData['admin'] = $this->getUser();
-
             $this->orderPdfRepository->save($arrData);
         }
 

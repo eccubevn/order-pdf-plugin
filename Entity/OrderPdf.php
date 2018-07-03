@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the OrderPdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,28 +24,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class OrderPdf extends AbstractEntity
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ids", type="string")
-     */
-    private $ids;
+    public $ids;
+
+    public $issue_date;
+
+    public $default;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer", options={"unsigned":true})
+     * @ORM\Column(name="member_id", type="integer", options={"unsigned":true})
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="issue_date", type="datetimetz")
-     */
-    private $issue_date;
+    private $member_id;
 
     /**
      * @var string
@@ -94,13 +88,6 @@ class OrderPdf extends AbstractEntity
     private $note3;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="default", type="boolean", options={"default": 0})
-     */
-    private $default;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_date", type="datetimetz")
@@ -124,56 +111,19 @@ class OrderPdf extends AbstractEntity
     /**
      * @return string
      */
-    public function getIds()
+    public function getMemberId()
     {
-        return $this->ids;
+        return $this->member_id;
     }
 
     /**
-     * @param $ids
+     * @param $member_id
+     *
      * @return $this
      */
-    public function setIds($ids)
+    public function setMemberId($member_id)
     {
-        $this->ids = $ids;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getIssueDate()
-    {
-        return $this->issue_date;
-    }
-
-    /**
-     * @param $issue_date
-     * @return $this
-     */
-    public function setIssueDate($issue_date)
-    {
-        $this->issue_date = $issue_date;
+        $this->member_id = $member_id;
 
         return $this;
     }
@@ -188,6 +138,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -207,6 +158,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $message1
+     *
      * @return $this
      */
     public function setMessage1($message1)
@@ -226,6 +178,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $message2
+     *
      * @return $this
      */
     public function setMessage2($message2)
@@ -245,6 +198,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $message3
+     *
      * @return $this
      */
     public function setMessage3($message3)
@@ -264,6 +218,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $note1
+     *
      * @return $this
      */
     public function setNote1($note1)
@@ -283,6 +238,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $note2
+     *
      * @return $this
      */
     public function setNote2($note2)
@@ -302,30 +258,12 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $note3
+     *
      * @return $this
      */
     public function setNote3($note3)
     {
         $this->note3 = $note3;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDefault()
-    {
-        return $this->default;
-    }
-
-    /**
-     * @param $default
-     * @return $this
-     */
-    public function setDefault($default)
-    {
-        $this->default = $default;
 
         return $this;
     }
@@ -340,6 +278,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $create_date
+     *
      * @return $this
      */
     public function setCreateDate($create_date)
@@ -359,6 +298,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $update_date
+     *
      * @return $this
      */
     public function setUpdateDate($update_date)
@@ -378,6 +318,7 @@ class OrderPdf extends AbstractEntity
 
     /**
      * @param $del_flg
+     *
      * @return $this
      */
     public function setDelFlg($del_flg)
@@ -387,4 +328,3 @@ class OrderPdf extends AbstractEntity
         return $this;
     }
 }
-

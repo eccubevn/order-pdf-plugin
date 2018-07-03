@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the Order Pdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,13 +29,13 @@ use Plugin\OrderPdf\Repository\OrderPdfRepository;
  */
 class OrderPdfService extends AbstractFPDIService
 {
-    /** @var  OrderRepository */
+    /** @var OrderRepository */
     protected $orderRepository;
 
-    /** @var  OrderPdfRepository */
+    /** @var OrderPdfRepository */
     protected $orderPdfRepository;
 
-    /** @var  TaxRuleService */
+    /** @var TaxRuleService */
     protected $taxRuleService;
     /**
      * @var Application
@@ -42,8 +45,6 @@ class OrderPdfService extends AbstractFPDIService
     // ====================================
     // 定数宣言
     // ====================================
-    /** OrderPdf用リポジトリ名 */
-    const REPOSITORY_ORDER_PDF = 'eccube.repository.order';
 
     /** 通貨単位 */
     const MONETARY_UNIT = '円';
@@ -66,12 +67,12 @@ class OrderPdfService extends AbstractFPDIService
     /** 購入詳細情報 ラベル配列
      * @var array
      */
-    private $labelCell = array();
+    private $labelCell = [];
 
     /*** 購入詳細情報 幅サイズ配列
      * @var array
      */
-    private $widthCell = array();
+    private $widthCell = [];
 
     /** 最後に処理した注文番号 @var string */
     private $lastOrderId = null;
@@ -96,7 +97,6 @@ class OrderPdfService extends AbstractFPDIService
     /** 発行日 @var string */
     private $issueDate = '';
 
-
     public function __construct(EccubeConfig $eccubeConfig, OrderRepository $orderRepository, TaxRuleService $taxRuleService, BaseInfoRepository $baseInfoRepository)
     {
         $this->eccubeConfig = $eccubeConfig;
@@ -111,10 +111,10 @@ class OrderPdfService extends AbstractFPDIService
         $this->labelCell[] = '数量';
         $this->labelCell[] = '単価';
         $this->labelCell[] = '金額(税込)';
-        $this->widthCell = array(110.3, 12, 21.7, 24.5);
+        $this->widthCell = [110.3, 12, 21.7, 24.5];
 
         // Fontの設定しておかないと文字化けを起こす
-         $this->SetFont(self::FONT_SJIS);
+        $this->SetFont(self::FONT_SJIS);
 
         // PDFの余白(上左右)を設定
         $this->SetMargins(15, 20);
@@ -125,7 +125,7 @@ class OrderPdfService extends AbstractFPDIService
         // フッターの出力を無効化
         $this->setPrintFooter(true);
         $this->setFooterMargin();
-        $this->setFooterFont(array(self::FONT_SJIS, '', 8));
+        $this->setFooterFont([self::FONT_SJIS, '', 8]);
     }
 
     /**
@@ -359,7 +359,7 @@ class OrderPdfService extends AbstractFPDIService
         // フォント情報のバックアップ
         $this->backupFont();
 
-       //文書タイトル（納品書・請求書）
+        //文書タイトル（納品書・請求書）
         $this->SetFont(self::FONT_GOTHIC, '', 15);
         $this->Cell(0, 10, $title, 0, 2, 'C', 0, '');
         $this->Cell(0, 66, '', 0, 2, 'R', 0, '');
@@ -409,7 +409,7 @@ class OrderPdfService extends AbstractFPDIService
             $orderDate = $Order->getOrderDate()->format('Y/m/d H:i');
         }
 
-        $this->lfText(25, 125, $orderDate , 10);
+        $this->lfText(25, 125, $orderDate, 10);
         //注文番号
         $this->lfText(25, 135, $Order->getId(), 10);
 
@@ -433,7 +433,7 @@ class OrderPdfService extends AbstractFPDIService
      */
     protected function renderOrderDetailData(Order $Order)
     {
-        $arrOrder = array();
+        $arrOrder = [];
         // テーブルの微調整を行うための購入商品詳細情報をarrayに変換する
 
         // =========================================
@@ -548,7 +548,7 @@ class OrderPdfService extends AbstractFPDIService
         $this->backupFont();
 
         // 開始座標の設定
-         $this->setBasePosition(0, 149);
+        $this->setBasePosition(0, 149);
 
         // Colors, line width and bold font
         $this->SetFillColor(216, 216, 216);
@@ -644,12 +644,12 @@ class OrderPdfService extends AbstractFPDIService
      */
     protected function setDefaultData(array &$formData)
     {
-        $defaultList = array(
+        $defaultList = [
             'title' => trans('admin.plugin.order_pdf.title.default'),
             'message1' => trans('admin.plugin.order_pdf.message1.default'),
             'message2' => trans('admin.plugin.order_pdf.message2.default'),
             'message3' => trans('admin.plugin.order_pdf.message3.default'),
-        );
+        ];
 
         foreach ($defaultList as $key => $value) {
             if (is_null($formData[$key])) {

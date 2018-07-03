@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the Order Pdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,14 +13,12 @@
 
 namespace Plugin\OrderPdf\Form\Type;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Eccube\Application;
 use Eccube\Common\EccubeConfig;
+use Plugin\OrderPdf\Entity\OrderPdf;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -30,14 +31,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class OrderPdfType extends AbstractType
 {
-    /** @var  EccubeConfig */
+    /** @var EccubeConfig */
     private $eccubeConfig;
 
-    /** @var  EntityManagerInterface */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /**
      * OrderPdfType constructor.
+     *
      * @param EccubeConfig $eccubeConfig
      * @param EntityManagerInterface $entityManager
      */
@@ -46,7 +48,6 @@ class OrderPdfType extends AbstractType
         $this->eccubeConfig = $eccubeConfig;
         $this->entityManager = $entityManager;
     }
-
 
     /**
      * Build config type form.
@@ -58,91 +59,91 @@ class OrderPdfType extends AbstractType
     {
         $config = $this->eccubeConfig;
         $builder
-            ->add('ids', TextType::class, array(
-                'label' => '注文番号',
+            ->add('ids', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.001',
                 'required' => false,
-                'attr' => array('readonly' => 'readonly'),
-                'constraints' => array(
+                'attr' => ['readonly' => 'readonly'],
+                'constraints' => [
                     new Assert\NotBlank(),
-                ),
-            ))
-            ->add('issue_date', DateType::class, array(
-                'label' => '発行日',
+                ],
+            ])
+            ->add('issue_date', DateType::class, [
+                'label' => 'admin.plugin.order_pdf.label.002',
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
                 'required' => true,
                 'data' => new \DateTime(),
-                'constraints' => array(
+                'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\DateTime(),
-                ),
-            ))
-            ->add('title', TextType::class, array(
-                'label' => '帳票タイトル',
+                ],
+            ])
+            ->add('title', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.003',
                 'required' => false,
-                'attr' => array('maxlength' => $config['eccube_stext_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
+                'attr' => ['maxlength' => $config['eccube_stext_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
             // メッセージ
-            ->add('message1', TextType::class, array(
-                'label' => '1行目',
+            ->add('message1', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.004',
                 'required' => false,
-                'attr' => array('maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['OrderPdf']['const']['order_pdf_message_len'])),
-                ),
+                'attr' => ['maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['OrderPdf']['const']['order_pdf_message_len']]),
+                ],
                 'trim' => false,
-            ))
-            ->add('message2', TextType::class, array(
-                'label' => '2行目',
+            ])
+            ->add('message2', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.005',
                 'required' => false,
-                'attr' => array('maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['OrderPdf']['const']['order_pdf_message_len'])),
-                ),
+                'attr' => ['maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['OrderPdf']['const']['order_pdf_message_len']]),
+                ],
                 'trim' => false,
-            ))
-            ->add('message3', TextType::class, array(
-                'label' => '3行目',
+            ])
+            ->add('message3', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.006',
                 'required' => false,
-                'attr' => array('maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['OrderPdf']['const']['order_pdf_message_len'])),
-                ),
+                'attr' => ['maxlength' => $config['OrderPdf']['const']['order_pdf_message_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['OrderPdf']['const']['order_pdf_message_len']]),
+                ],
                 'trim' => false,
-            ))
+            ])
             // 備考
-            ->add('note1', TextType::class, array(
-                'label' => '1行目',
+            ->add('note1', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.007',
                 'required' => false,
-                'attr' => array('maxlength' => $config['eccube_stext_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
-            ->add('note2', TextType::class, array(
-                'label' => '2行目',
+                'attr' => ['maxlength' => $config['eccube_stext_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
+            ->add('note2', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.008',
                 'required' => false,
-                'attr' => array('maxlength' => $config['eccube_stext_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
-            ->add('note3', TextType::class, array(
-                'label' => '3行目',
+                'attr' => ['maxlength' => $config['eccube_stext_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
+            ->add('note3', TextType::class, [
+                'label' => 'admin.plugin.order_pdf.label.009',
                 'required' => false,
-                'attr' => array('maxlength' => $config['eccube_stext_len']),
-                'constraints' => array(
-                    new Assert\Length(array('max' => $config['eccube_stext_len'])),
-                ),
-            ))
-            ->add('default', CheckboxType::class, array(
+                'attr' => ['maxlength' => $config['eccube_stext_len']],
+                'constraints' => [
+                    new Assert\Length(['max' => $config['eccube_stext_len']]),
+                ],
+            ])
+            ->add('default', CheckboxType::class, [
                 'required' => false,
-                'label' => '入力内容を保存する',
-            ))
+                'label' => 'admin.plugin.order_pdf.label.010',
+            ])
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 $form = $event->getForm();
                 $data = $form->getData();

@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the OrderPdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -39,17 +42,17 @@ class OrderPdfRepository extends AbstractRepository
     public function save($arrData)
     {
         /**
-         * @var Member $Member
+         * @var Member
          */
         $Member = $arrData['admin'];
-        $em = $this->getEntityManager();
+
         try {
             $OrderPdf = $this->find($Member);
             if (!$OrderPdf) {
                 $OrderPdf = new OrderPdf();
             }
 
-            $OrderPdf->setId($Member->getId())
+            $OrderPdf->setMemberId($Member->getId())
                 ->setTitle($arrData['title'])
                 ->setMessage1($arrData['message1'])
                 ->setMessage2($arrData['message2'])
@@ -58,8 +61,8 @@ class OrderPdfRepository extends AbstractRepository
                 ->setNote2($arrData['note2'])
                 ->setNote3($arrData['note3'])
                 ->setDelFlg(Constant::DISABLED);
-            $em->persist($OrderPdf);
-            $em->flush($OrderPdf);
+            $this->getEntityManager()->persist($OrderPdf);
+            $this->getEntityManager()->flush($OrderPdf);
         } catch (\Exception $e) {
             return false;
         }

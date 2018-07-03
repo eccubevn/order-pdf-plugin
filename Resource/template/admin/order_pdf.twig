@@ -12,8 +12,8 @@
 
 {% set menus = ['order', 'order_master'] %}
 
-{% block title %}受注管理{% endblock %}
-{% block sub_title %}帳票出力{% endblock %}
+{% block title %}{{ 'admin.plugin.order_pdf.title.001'|trans }}{% endblock %}
+{% block sub_title %}{{ 'admin.plugin.order_pdf.title.002'|trans }}{% endblock %}
 
 {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
@@ -29,7 +29,7 @@
                 <div class="c-primaryCol">
                     <div class="card rounded border-0 mb-4">
                         <div class="card-header">
-                            <h4 class="box-title font-weight-bold">帳票の作成</h4>
+                            <h4 class="box-title font-weight-bold">{{ 'admin.plugin.order_pdf.title.003'|trans }}</h4>
                         </div>
 
                         <div class="card-body">
@@ -60,7 +60,7 @@
                                 </div>
                                 {#メッセージ#}
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">メッセージ</label>
+                                    <label class="col-sm-2 control-label">{{ 'admin.plugin.order_pdf.title.004'|trans }}</label>
                                     <div class="col-sm-offset-2">
                                         {{ form_label(form.message1) }}
                                         <div class="col-sm-9 col-lg-10">
@@ -89,7 +89,7 @@
                                 </div>
                                 {#備考#}
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">備考</label>
+                                    <label class="col-sm-2 control-label">{{ 'admin.plugin.order_pdf.title.005'|trans }}</label>
                                     <div class="col-sm-offset-2">
                                         {{ form_label(form.note1) }}
                                         <div class="col-sm-9 col-lg-10">
@@ -172,24 +172,21 @@
                         <div class="c-conversionArea__leftBlockItem">
                             <a class="c-beseLink" href="{{ url('admin_order_page', { page_no: app.session.get('eccube.admin.order.search.page_no')|default('1') }) }}?resume=1">
                                 <i class="fa fa-backward" aria-hidden="true"></i>
-                                <span>検索画面に戻る</span></a>
+                                <span>{{ 'admin.plugin.order_pdf.label.011'|trans }}</span></a>
 
                         </div>
                     </div>
                     <div class="col-4 text-right">
                         <div class="row align-items-center justify-content-end">
                             <div class="col-auto">
-                                <button class="btn btn-ec-sub px-5" type="reset">リセット</button>
+                                <button class="btn btn-ec-sub px-5" id="reset" type="reset">{{ 'admin.plugin.order_pdf.label.012'|trans }}</button>
                             </div>
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="row align-items-center justify-content-end">
                             <div class="col-auto">
-                                <button class="btn btn-ec-conversion px-5" type="submit">この内容で作成する</button>
-                                {#<button class="btn btn-primary btn-block btn-lg"#}
-                                        {#onclick="document.order_pdf_form.submit();">#}
-                                {#</button>#}
+                                <button class="btn btn-ec-conversion px-5" type="submit">{{ 'admin.plugin.order_pdf.label.013'|trans }}</button>
                             </div>
                         </div>
                     </div>
@@ -216,16 +213,18 @@
                 });
             }
 
+            Ladda.bind( 'button#submit', { timeout: 2000 } );
+
             $("#reset").click(function (_e) {
                 _e.preventDefault();
-                $("input[name='admin_order_pdf[title]']").val('{{ form.vars.value.title }}');
-                $("input[name='admin_order_pdf[issue_date]']").val('{{ "now"|date("Y-m-d") }}');
-                $("input[name='admin_order_pdf[message1]']").val('{{ form.vars.value.message1 }}');
-                $("input[name='admin_order_pdf[message2]']").val('{{ form.vars.value.message2 }}');
-                $("input[name='admin_order_pdf[message3]']").val('{{ form.vars.value.message3 }}');
-                $("input[name='admin_order_pdf[note1]']").val('{{ form.vars.value.note1 }}');
-                $("input[name='admin_order_pdf[note2]']").val('{{ form.vars.value.note2 }}');
-                $("input[name='admin_order_pdf[note3]']").val('{{ form.vars.value.note3 }}');
+                $("input[name='order_pdf[title]']").val('{{ form.vars.value.title }}');
+                $("input[name='order_pdf[issue_date]']").val('{{ "now"|date("Y-m-d") }}');
+                $("input[name='order_pdf[message1]']").val('{{ form.vars.value.message1 }}');
+                $("input[name='order_pdf[message2]']").val('{{ form.vars.value.message2 }}');
+                $("input[name='order_pdf[message3]']").val('{{ form.vars.value.message3 }}');
+                $("input[name='order_pdf[note1]']").val('{{ form.vars.value.note1 }}');
+                $("input[name='order_pdf[note2]']").val('{{ form.vars.value.note2 }}');
+                $("input[name='order_pdf[note3]']").val('{{ form.vars.value.note3 }}');
             });
         });
     </script>

@@ -1,8 +1,11 @@
 <?php
+
 /*
- * This file is part of the OrderPdf plugin
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +15,6 @@ namespace Plugin\OrderPdf\Event;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-
 
 /**
  * Class Common Event.
@@ -89,7 +91,7 @@ class CommonEvent
          */
         $search .= '(<div\s+class="card rounded border\-0 mb\-4")/';
 
-        $arrMatch = array();
+        $arrMatch = [];
         preg_match($search, $html, $arrMatch, PREG_OFFSET_CAPTURE);
 
         if (!isset($arrMatch[4])) {
@@ -98,15 +100,15 @@ class CommonEvent
 
         $oldHtml = $arrMatch[2][0];
 
-        // first html
+        // First html
         $oldHtmlStartPos = $arrMatch[2][1];
         $firstHalfHtml = substr($html, 0, $oldHtmlStartPos);
 
-        // end html
+        // End html
         $oldHtmlEndPos = $arrMatch[3][1];
         $endHalfHtml = substr($html, $oldHtmlEndPos);
 
-        // new html
+        // New html
         $newHtml = str_replace(
             "<button class=\"btn btn-ec-regular mr-2\">{{ 'admin.order.index.btn_bulk_export'|trans }}</button>",
             "<button class=\"btn btn-ec-regular mr-2\">{{ 'admin.order.index.btn_bulk_export'|trans }}</button>".$part,
