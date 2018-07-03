@@ -13,12 +13,12 @@
 
 namespace Plugin\OrderPdf\Service;
 
-$includePath = get_include_path().';'.__DIR__.'/../vendor/tcpdf-s';
-$includePath = $includePath.';'.__DIR__.'/../vendor/FPDI-ss';
+$includePath = get_include_path().';'.__DIR__.'/../vendor/tcpdf-lib';
+$includePath = $includePath.';'.__DIR__.'/../vendor/FPDI-lib';
 set_include_path($includePath);
 
-require_once __DIR__.'/../vendor/tcpdf-s/tcpdf.php';
-require_once __DIR__.'/../vendor/FPDI-ss/fpdi.php';
+require_once __DIR__.'/../vendor/tcpdf-lib/tcpdf.php';
+require_once __DIR__.'/../vendor/FPDI-lib/fpdi.php';
 
 /**
  * FPDIのラッパークラス.

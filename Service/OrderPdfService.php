@@ -266,38 +266,22 @@ class OrderPdfService extends AbstractFPDIService
         // 基準座標を設定する
         $this->setBasePosition();
 
-        // 特定商取引法を取得する
-        /* @var Help $Help */
-//        $Help = $this->app['eccube.repository.help']->get();
-
         // ショップ名
         $this->lfText(125, 60, $this->baseInfoRepository->getShopName(), 8, 'B');
-        // URL
-        $this->lfText(125, 63, 'getLawUrl', 8);
-        // 会社名
-        $this->lfText(125, 68, 'getLawCompany', 8);
-        // 郵便番号
-        $text = '〒 '.'getLawZip01'.' - '.'getLawZip02';
-        $this->lfText(125, 71, $text, 8);
+
         // 都道府県+所在地
-        $lawPref = 'getLawZip02' ? '$Help->getLawPref->getName' : null;
-        $text = $lawPref.'getLawAddr01';
-        $this->lfText(125, 74, $text, 8);
-        $this->lfText(125, 77, 'getLawAddr02', 8);
+        $text = $this->baseInfoRepository->getAddr01();
+        $this->lfText(125, 65, $text, 8);
+        $this->lfText(125, 69, $this->baseInfoRepository->getAddr02(), 8);
 
         // 電話番号
-        $text = 'TEL: '.'getLawTel01'.'-'.'getLawTel02'.'-'.'getLawTel03';
-
-        //FAX番号が存在する場合、表示する
-        if (strlen('getLawFax01') > 0) {
-            $text .= '　FAX: '.'getLawFax01'.'-'.'getLawFax02'.'-'.'getLawFax03';
-        }
-        $this->lfText(125, 80, $text, 8);  //TEL・FAX
+        $text = 'TEL: '.$this->baseInfoRepository->getPhoneNumber();
+        $this->lfText(125, 72, $text, 8);  //TEL・FAX
 
         // メールアドレス
-        if (strlen('getLawEmail') > 0) {
-            $text = 'Email: '.'getLawEmail';
-            $this->lfText(125, 83, $text, 8);      // Email
+        if (strlen($this->baseInfoRepository->getEmail01()) > 0) {
+            $text = 'Email: '.$this->baseInfoRepository->getEmail01();
+            $this->lfText(125, 75, $text, 8);      // Email
         }
 
         // ロゴ画像(app配下のロゴ画像を優先して読み込む)
@@ -385,9 +369,6 @@ class OrderPdfService extends AbstractFPDIService
         // =========================================
         // 購入者情報部
         // =========================================
-        // 郵便番号
-        $text = '〒 '.$Order->getZip01().' - '.$Order->getZip02();
-        $this->lfText(23, 43, $text, 10);
 
         // 購入者都道府県+住所1
         $text = $Order->getPref().$Order->getAddr01();
