@@ -40,7 +40,7 @@ class OrderPdfEvent implements EventSubscriberInterface
      *
      * @param TemplateEvent $event
      */
-    public function onAdminOrderIndexRender(TemplateEvent $event)
+    public function onAdminOrderIndexRender($event)
     {
         /* @var OrderPdf $orderPdfEvent */
         $this->orderPdfEvent->onAdminOrderIndexRender($event);
@@ -53,8 +53,9 @@ class OrderPdfEvent implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
+
         return [
-            'Admin/@admin/Order/index.twig' => [['onAdminOrderIndexRender', 10]],
+            '@admin/Order/index.twig' => 'onAdminOrderIndexRender'
         ];
     }
 }

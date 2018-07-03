@@ -22,3 +22,4 @@ admin.plugin.order_pdf.title.002: 帳票出力
 admin.plugin.order_pdf.title.003: 帳票の作成
 admin.plugin.order_pdf.title.004: メッセージ
 admin.plugin.order_pdf.title.005: 備考
+admin.plugin.order_pdf.button.export: PDF出力

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 #}
-{% extends '@admin/styleguide_frame.twig' %}
+{% extends '@admin/default_frame.twig' %}
 
 {% set menus = ['order', 'order_master'] %}
 
@@ -33,94 +33,87 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="form-horizontal">
-                                {#発行日#}
-                                <div class="form-group">
-                                    {{ form_label(form.issue_date) }}
-                                    <div class="col-sm-9 col-lg-10 form-inline">
-                                        {{ form_widget(form.issue_date) }}
-                                        {{ form_errors(form.issue_date) }}
-                                    </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'admin.plugin.order_pdf.label.002'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.issue_date) }}
+                                    {{ form_errors(form.issue_date) }}
                                 </div>
-                                {#注文番号#}
-                                <div class="form-group">
-                                    {{ form_label(form.ids) }}
-                                    <div class="col-sm-9 col-lg-10">
-                                        {{ form_widget(form.ids) }}
-                                        {{ form_errors(form.ids) }}
-                                    </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'admin.plugin.order_pdf.label.001'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.ids) }}
+                                    {{ form_errors(form.ids) }}
                                 </div>
-                                {#帳票タイトル#}
-                                <div class="form-group">
-                                    {{ form_label(form.title) }}
-                                    <div class="col-sm-9 col-lg-10">
-                                        {{ form_widget(form.title) }}
-                                        {{ form_errors(form.title) }}
-                                    </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'admin.plugin.order_pdf.label.003'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.title) }}
+                                    {{ form_errors(form.title) }}
                                 </div>
-                                {#メッセージ#}
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">{{ 'admin.plugin.order_pdf.title.004'|trans }}</label>
-                                    <div class="col-sm-offset-2">
-                                        {{ form_label(form.message1) }}
-                                        <div class="col-sm-9 col-lg-10">
-                                            {{ form_errors(form.message1) }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3"><span class="align-middle">{{ 'admin.plugin.order_pdf.label.004'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    <div class="row">
+                                        <div class="col-2"><span>{{ 'admin.plugin.order_pdf.label.004'|trans }}</span></div>
+                                        <div class="col mb-2">
                                             {{ form_widget(form.message1) }}
+                                            {{ form_errors(form.message1) }}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2">
-                                        {{ form_label(form.message2) }}
-                                        <div class="col-sm-9 col-lg-10">
+
+                                    <div class="row">
+                                        <div class="col-2"><span>{{ 'admin.plugin.order_pdf.label.005'|trans }}</span></div>
+                                        <div class="col mb-2">
                                             {{ form_widget(form.message2) }}
                                             {{ form_errors(form.message2) }}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2">
-                                        {{ form_label(form.message3) }}
-                                        <div class="col-sm-9 col-lg-10">
+
+                                    <div class="row">
+                                        <div class="col-2"><span>{{ 'admin.plugin.order_pdf.label.006'|trans }}</span></div>
+                                        <div class="col mb-2">
                                             {{ form_widget(form.message3) }}
                                             {{ form_errors(form.message3) }}
                                         </div>
                                     </div>
-                                </div>
-                                {#備考#}
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">{{ 'admin.plugin.order_pdf.title.005'|trans }}</label>
-                                    <div class="col-sm-offset-2">
-                                        {{ form_label(form.note1) }}
-                                        <div class="col-sm-9 col-lg-10">
-                                            {{ form_errors(form.note1) }}
+
+                                    <div class="row">
+                                        <div class="col-2"><span>{{ 'admin.plugin.order_pdf.label.007'|trans }}</span></div>
+                                        <div class="col mb-2">
                                             {{ form_widget(form.note1) }}
+                                            {{ form_errors(form.note1) }}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2">
-                                        {{ form_label(form.note2) }}
-                                        <div class="col-sm-9 col-lg-10">
+
+                                    <div class="row">
+                                        <div class="col-2"><span>{{ 'admin.plugin.order_pdf.label.008'|trans }}</span></div>
+                                        <div class="col mb-2">
                                             {{ form_widget(form.note2) }}
                                             {{ form_errors(form.note2) }}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2">
-                                        {{ form_label(form.note3) }}
-                                        <div class="col-sm-9 col-lg-10">
+
+                                    <div class="row">
+                                        <div class="col-2"><span>{{ 'admin.plugin.order_pdf.label.009'|trans }}</span></div>
+                                        <div class="col mb-2">
                                             {{ form_widget(form.note3) }}
                                             {{ form_errors(form.note3) }}
                                         </div>
                                     </div>
-                                </div>
-                                {# 保存する #}
-                                <div class="form-group text-right">
-                                    <div class="col-sm-12 col-lg-12">
-                                        {{ form_widget(form.default) }}
-                                        {{ form_errors(form.default) }}
+
+                                    <div class="row">
+                                        <div class="col-2">&nbsp;</div>
+                                        <div class="col mb-2">
+                                            {{ form_widget(form.default) }}
+                                            {{ form_errors(form.default) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
