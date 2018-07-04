@@ -13,29 +13,11 @@
 
 namespace Plugin\OrderPdf\Event;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-
 /**
  * Class Common Event.
  */
 class CommonEvent
 {
-    /**
-     * @var string target render on the front-end
-     */
-    protected $makerTag = '<!--# maker-plugin-tag #-->';
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
-
     /**
      * @var \Twig_Environment
      */
@@ -45,17 +27,10 @@ class CommonEvent
      * CommonEvent constructor.
      *
      * @param \Twig_Environment $twigEnvironment
-     * @param TranslatorInterface $translator
-     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      */
-    public function __construct(
-        \Twig_Environment $twigEnvironment,
-        TranslatorInterface $translator,
-        EntityManagerInterface $entityManager
-    ) {
+    public function __construct(\Twig_Environment $twigEnvironment)
+    {
         $this->twigEnvironment = $twigEnvironment;
-        $this->translator = $translator;
-        $this->entityManager = $entityManager;
     }
 
     /**

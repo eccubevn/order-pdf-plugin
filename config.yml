@@ -2,5 +2,3 @@ name: OrderPdf
 event: OrderPdfEvent
 code: OrderPdf
 version: 1.0.0
-service:
-    - OrderPdfServiceProvider
